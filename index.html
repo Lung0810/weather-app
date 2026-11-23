@@ -34,6 +34,33 @@
                     <p id="current-condition" class="condition"></p>
                 </div>
             </div>
+
+            <div class="current-detail">
+                <div class="detail">
+                    <span class="detail-label">Wind</span>
+                    <span id="wind" class="detail-value"></span>
+                </div>
+                <div class="detail">
+                    <span class="detail-label">Rain Chance</span>
+                    <span id="rain" class="detail-value"></span>
+                </div>
+                <div class="detail">
+                    <span class="detail-label">Humidty</span>
+                    <span id="humidity" class="detail-value"></span>
+                </div>
+            </div>
+        </section>
+
+        <section id="hourly-section" class="hidden">
+            <div class="hour-section">
+                <h2>Previous 24 hours</h2>
+                <div id="previous-hour" class="hourly-row"></div>
+            </div>
+
+            <div class="hour-section">
+                <h2>Next 24 hours</h2>
+                <div id="next-hour" class="hourly-row"></div>
+            </div>
         </section>
     </main>
 </body>
