@@ -4,16 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="background-animation"></div>
-    <h1>Weather Dashboard</h1>
-    <div class="container">
-        <div class="weather-input">
-            <h3>Enter a City Name</h3>
-            <input class="city-input" type="text" placeholder="E.g. Hong Kong, New York, Singapore...">
-            <button class="search-button"><i clas></i>Search</button>
-        </div>
-    </div>
+    <main class="app">
+        <header>
+            <h1>Weather App</h1>
+            <p>Search any city to see cureent adn hour weather.</p>
+        </header>
+
+        <form class="search-form" id="search-form">
+            <input type="text" id="loaction-input" placeholder="Enter a city, e.g.Hong Kong" autocomplete="off" required>
+            <button type="submit">Search</button>
+            <button type="button" id="refresh-button" class="secondary">Refresh</button>
+        </form>
+
+        <p id="status" class="status" role=status></p>
+
+        <section id="current-weather" class="current-weather hidden">
+            <div>
+                <p id="location-name" class="location-name"></p>
+                <p id="current-date" class="muted"></p>
+            </div>
+
+            <div class="current-main">
+                <span id="current-icon" class="weather-icon"></span>
+                <div>
+                    <p id="current-temperature" class="temperature"></p>
+                    <p id="current-condition" class="condition"></p>
+                </div>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
