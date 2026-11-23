@@ -1,25 +1,15 @@
 const API_KEY = "KW8QWX23ES9LS958DFP7MSBMB"; //API Key
-const BASE_URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"
+const BASE_URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" //BASE_URL
 
-const cityInput = document.querySelector(".city-input")
-const searchButton = document.querySelector(".search-button")
-const locationButton = document.querySelector(".location-button")
-const currentWeatherDiv = document.querySelector(".current-weather")
-const weatherCardsDiv = document.querySelector(".weather-cards")
+const form = document.getElementById("search-form");
+const locationInput = document.getElementById("loaction-input");
+const refreshButton = document.getElementById("refresh-button");
 
-// Function to show loading spinner
-const showLoading = () => {
-    currentWeatherDiv.innerHTML = `<div class="loading-spinner></div>`;
-    weatherCardsDiv.innerHTML = "";
-}
+const statusElement = document.getElementById("status");
+const currentWeatherSection = document.getElementById("current-weather");
+const hourlySection = document.getElementById("hourly-section");
 
-// Function to hide loading spinner
-const hideLoading = () => {
-    const spinner = document.querySelector(".loading-spinner")
-    if (spinner) spinner.remove();
-}
+const previousHourEl = document.getElementById("previous-hour");
+const nextHourEl = document.getElementById("next-hour");
 
-// Function to get weather-specific icon, animation, and background
-const getWeatherDetailsWithEffect = (weatherCondition, iconCode) => {
-    const isDay = iconCode.includes("d")
-}
+let lastLocation = "";
