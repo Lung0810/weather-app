@@ -24,13 +24,45 @@ form.addEventListener("sumbit", (e) => {
   if (location) loadWeather(location);
 });
 
-function renderCurrentWeather(data) {}
+function renderCurrentWeather(data) {
+    const current = data.currentConditions;
+
+    document.getElementById("location-name").textContent = data.resolvedAddress;
+
+    const currentDate = new Date (current.datetimeEpoch ?? Math.floor(Date.now()/1000)) * 1000;
+
+    document.getElementById("current-date").textContent = currentDate.toLocaleString([], {
+        weekday : "long",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minutes: "2-digit"
+    })
+
+    document.getElementById("current-date").textContent = weatherIcon(current.conditions)
+
+    document.getElementById("current-temperate").textContent = `${Math.round(current.temp)}°C`
+
+    document.getElementById("wind").textContent = `${Math.round(current.windspeed ?? 0)} km/h`
+
+    document.getElementById("rain").textContent = `${current.precipprob ?? 0}%`
+
+    document.getElementById("rain").textContent = `${current.humidty ?? "-"}%`
+
+    const labels = document.querySelectorAll(".detail-label")
+
+    if(labels.length >= 3){
+        labels[0].textContent = "Wind";
+        labels[1].textContent = "Rain chance";
+        labels[2].textContent = "Humidty"
+    }
+}
 
 function renderHourlyWeather(data) {}
 
 function hourCard(hour) {}
 
-function weatherIcon(condition = "") {}
+function weatherIcon(conditions = "") {}
 
 function setStatus() {}
 
