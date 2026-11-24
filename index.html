@@ -7,69 +7,69 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="app">
+    <div class="app">
       <header>
         <h1>Weather App</h1>
-        <p>Search any city to see cureent adn hour weather.</p>
-      </header>
+        <p class="subtitle">
+          Search any city and see current conditions plus the surrounding 48
+          hours.
+        </p>
 
-      <form class="search-form" id="search-form">
-        <input
-          type="text"
-          id="loaction-input"
-          placeholder="Enter a city, e.g.Hong Kong"
-          autocomplete="off"
-          required
-        />
-        <button type="submit">Search</button>
-        <button type="button" id="refresh-button" class="secondary">
-          Refresh
-        </button>
-      </form>
+        <form id="search-form">
+          <input
+            id="location-input"
+            type="text"
+            placeholder="Enter a city, postcode, or coordinates"
+            aria-label="Location"
+            required
+          />
+          <button type="submit">Search</button>
+          <button type="button" id="locate-button" class="secondary">Use my location</button>
+        </form>
+      </header>
 
       <p id="status" class="status" role="status"></p>
 
-      <section id="current-weather" class="current-weather hidden">
-        <div>
-          <p id="location-name" class="location-name"></p>
-          <p id="current-date" class="muted"></p>
-        </div>
-
+      <section id="current-section" class="current hidden" aria-live="polite">
         <div class="current-main">
-          <span id="current-icon" class="weather-icon"></span>
-          <div>
-            <p id="current-temperature" class="temperature"></p>
-            <p id="current-condition" class="condition"></p>
+          <p id="place" class="place"></p>
+          <p id="temperature" class="temperature"></p>
+          <p id="condition" class="condition"></p>
+          <div class="refresh-row">
+            <button type="button" id="refresh-button" class="secondary">
+              Refresh
+            </button>
           </div>
         </div>
 
-        <div class="current-detail">
+        <div class="current-details">
           <div class="detail">
-            <span class="detail-label"></span>
+            <span class="detail-label">Wind</span>
             <span id="wind" class="detail-value"></span>
           </div>
           <div class="detail">
-            <span class="detail-label"></span>
+            <span class="detail-label">Rain chance</span>
             <span id="rain" class="detail-value"></span>
           </div>
           <div class="detail">
-            <span class="detail-label"></span>
+            <span class="detail-label">Humidity</span>
             <span id="humidity" class="detail-value"></span>
           </div>
         </div>
       </section>
 
       <section id="hourly-section" class="hidden">
-        <div class="hour-section">
-          <span class="hourly-information"></span>
-          <div id="previous-hour" class="hourly-row"></div>
+        <div class="hourly-section">
+          <h2>Previous 24 hours</h2>
+          <div id="previous-hours" class="hourly-row"></div>
         </div>
 
-        <div class="hour-section">
-          <span class="hourly-information"></span>
-          <div id="next-hour" class="hourly-row"></div>
+        <div class="hourly-section">
+          <h2>Next 24 hours</h2>
+          <div id="next-hours" class="hourly-row"></div>
         </div>
       </section>
-    </main>
+    </div>
+    <script src="script.js"></script>
   </body>
 </html>
