@@ -11,10 +11,9 @@ const refreshButton = document.getElementById("refresh-button");
 
 const statusEl = document.getElementById("status");
 const currentSection = document.getElementById("current-section");
-const hourlySection = document.getElementById("hourly-section");
+const dailySection = document.getElementById("daily-section");
 
-const previousHoursEl = document.getElementById("previous-hours");
-const nextHoursEl = document.getElementById("next-hours");
+const nextDaysEl = document.getElementById("next-days");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -26,25 +25,29 @@ form.addEventListener("submit", (e) => {
   }
 });
 
-refreshButton.addEventListener("click", ()=>{
-  if(lastLocation) loadWeather(lastLocation)
-})
+refreshButton.addEventListener("click", () => {
+  if (lastLocation) loadWeather(lastLocation);
+});
 
-locateButton.addEventListener("click", ()=>{
-  if(!navigator.geolocation){
-    setStatus("Geolocation is not supported by this browser.", ture)
-    return
+locateButton.addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    setStatus("Geolocation is not supported by this browser.", ture);
+    return;
   }
-  
-  setStatus("Getting your location...")
 
-  navigator.geolocation.getCurrentPosition((position)=>{
-    const {latitude, longtitude} = position.coords
-    loadWeather(`${latitude},${longtitude}`)
-  },()=>{
-    setStatus("Could not access your location. Please search manually", true)
-  },{timeout: 1000})
-})
+  setStatus("Getting your location...");
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longtitude } = position.coords;
+      loadWeather(`${latitude},${longtitude}`);
+    },
+    () => {
+      setStatus("Could not access your location. Please search manually", true);
+    },
+    { timeout: 1000 },
+  );
+});
 
 function setStatus(message, isError = false) {
   statusEl.textContent = message;
@@ -72,47 +75,30 @@ function renderCurrent(data) {
     `${current.humidity ?? "-"}%`;
 }
 
-function renderHourly(data) {
-  const hours = data.days.flatMap((day) =>
-    (day.hours ?? []).map((hour) => ({
-      ...hour,
-      dayDate: day.datetime,
-    })),
-  );
+function renderDaily(data) {
+  const today = toYmd(new Date());
+  const daily = data.days.filter((day) => day.datetime > today).slice(0, 7);
 
-  const nowEpoch = Math.floor(Date.now() / 1000);
-  let currentIndex = hours.findIndex((hour) => hour.datetimeEpoch >= nowEpoch);
-
-  if (currentIndex === -1) currentIndex = hours.length - 1;
-
-  const previous = hours.slice(Math.max(0, currentIndex - 24), currentIndex);
-
-  const next = hours.slice(currentIndex + 1, currentIndex + 25);
-
-  previousHoursEl.innerHTML = previous.length
-    ? previous.map((hour) => hourCard(hour)).join("")
-    : `<p class="status">No earlier hourly data available.</p>`;
-
-  nextHoursEl.innerHTML = next.length
-    ? next.map((hour) => hourCard(hour)).join("")
-    : `<p class="status">No later hourly data available.</p>`;
+  nextDaysEl.innerHTML = daily.map(dayCard).join("");
+  dailySection.classList.remove("hidden");
 }
 
-function hourCard(hour){
-  const time = new Date(hour.datetimeEpoch * 1000).toLocaleString([],{
+function dayCard(day) {
+  const date = new Date(day.datetimeEpoch * 1000).toLocaleString([], {
     weekday: "short",
-    hour: "numeric"
-  })
+    month: "short",
+    day: "numeric",
+  });
 
-  return `
-  <article class="hour-card">
-    <div class="time">${time}</div>
-    <div class="icon">${weatherIcon(hour.conditions)}</div>
-    <div class="temp">${Math.round(hour.temp)}°C</div>
-    <div class="meta>
-      ${Math.round(hour.windspeed)} km/h<br>
-      ${hour.precipprob ?? 0}% rain</div>
-    </article>`
+  return `<article class="day-card">
+      <p class="day-date">${date}</p>
+      <p class="day-icon">${weatherIcon(day.conditions)}</p>
+      <p class="day-temp">${Math.round(day.tempmax)}° / ${Math.round(day.tempmin)}°</p>
+      <p class="day-meta">
+        ${day.conditions}<br />
+        ${Math.round(day.precipprob ?? 0)}% rain
+      </p>
+    </article>`;
 }
 
 function weatherIcon(conditions = "") {
@@ -141,15 +127,15 @@ async function loadWeather(location) {
   setStatus("Loading Weather...");
 
   currentSection.classList.add("hidden");
-  hourlySection.classList.add("hidden");
+  dailySection.classList.add("hidden");
 
   const start = new Date();
   start.setDate(start.getDate() - 1);
 
   const end = new Date();
-  end.setDate(end.getDate() + 1);
+  end.setDate(end.getDate() + 7);
 
-  const url = `${BESE_URL}/${encodeURIComponent(location)}/${toYmd(start)}/${toYmd(end)}?unitGroup=metric&include=hours,current&key=${API_KEY}&contentType=json`;
+  const url = `${BESE_URL}/${encodeURIComponent(location)}/${toYmd(start)}/${toYmd(end)}?unitGroup=metric&include=days,hours,current&key=${API_KEY}&contentType=json`;
 
   try {
     const response = await fetch(url);
@@ -161,11 +147,12 @@ async function loadWeather(location) {
     setStatus("The Weather is below");
 
     const data = await response.json();
+
     renderCurrent(data);
-    renderHourly(data);
+    renderDaily(data);
 
     currentSection.classList.remove("hidden");
-    hourlySection.classList.remove("hidden");
+    dailySection.classList.remove("hidden");
   } catch (error) {
     console.error(error);
     setStatus(`Cannot load weather: ${error.message}`, true);
